@@ -1,1 +1,1231 @@
+<!DOCTYPE html>
+<html lang="mr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>यादव सरांचे गणित बूस्टर एप्लीकेशन v9</title>
+    <meta name="theme-color" content="#4facfe">
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="गणित बूस्टर">
+    <link rel="manifest" id="manifest-placeholder">
 
+    <style>
+        * {
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            user-select: none;
+            -webkit-user-select: none;
+        }
+
+        html, body {
+            width: 100%;
+            height: 100%;
+            overflow-x: hidden;
+            background: linear-gradient(135deg, #1a2a6c, #b21f1f, #fdbb2d);
+            background-size: 400% 400%;
+            animation: gradientBG 15s ease infinite;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            color: #333;
+        }
+
+        @keyframes gradientBG {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+
+        .container {
+            background: rgba(255, 255, 255, 0.98);
+            backdrop-filter: blur(10px);
+            width: 100vw;
+            min-height: 100vh;
+            padding: 16px;
+            position: relative;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            box-shadow: 0 0 20px rgba(0,0,0,0.3);
+        }
+
+        @media (min-width: 600px) {
+            .container {
+                max-width: 550px;
+                min-height: 92vh;
+                height: auto;
+                border-radius: 24px;
+                border: 3px solid rgba(255,255,255,0.4);
+                margin: 20px auto;
+            }
+        }
+
+        .header-bar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 12px;
+            padding-bottom: 8px;
+            border-bottom: 2px dashed #e0e0e0;
+        }
+
+        .user-info {
+            font-weight: bold;
+            font-size: 16px;
+            color: #2c3e50;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .btn-home {
+            background: #20bf6b;
+            color: white;
+            border: none;
+            padding: 6px 14px;
+            border-radius: 20px;
+            font-size: 13px;
+            font-weight: bold;
+            cursor: pointer;
+            box-shadow: 0 4px 10px rgba(32,191,107,0.3);
+        }
+
+        h1 {
+            color: #2c3e50;
+            font-size: 22px;
+            text-align: center;
+            margin-bottom: 10px;
+            text-shadow: 1px 1px 2px rgba(0,0,0,0.1);
+        }
+
+        .screen { display: none; width: 100%; }
+        .screen.active { 
+            display: flex; 
+            flex-direction: column; 
+            flex: 1; 
+            justify-content: space-between; 
+            animation: fadeIn 0.3s ease-in-out; 
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(8px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .form-group {
+            margin-bottom: 16px;
+            text-align: left;
+        }
+
+        label {
+            display: block;
+            font-weight: bold;
+            margin-bottom: 6px;
+            color: #34495e;
+            font-size: 15px;
+        }
+
+        input[type="text"], select {
+            width: 100%;
+            padding: 14px 16px;
+            font-size: 16px;
+            border-radius: 14px;
+            border: 2px solid #3498db;
+            outline: none;
+            font-weight: bold;
+            color: #2c3e50;
+            background: #f8fafc;
+        }
+
+        .btn-primary {
+            width: 100%;
+            background: linear-gradient(135deg, #2ecc71, #27ae60);
+            color: white;
+            border: none;
+            padding: 16px;
+            font-size: 19px;
+            font-weight: bold;
+            border-radius: 16px;
+            cursor: pointer;
+            box-shadow: 0 6px 15px rgba(46,204,113,0.4);
+            margin-top: 10px;
+        }
+
+        .btn-secondary {
+            background: #70a1ff;
+            color: white;
+            border: none;
+            padding: 8px 14px;
+            font-size: 13px;
+            font-weight: bold;
+            border-radius: 12px;
+            cursor: pointer;
+        }
+
+        .install-pwa-btn {
+            background: linear-gradient(135deg, #ff9f43, #ee5253);
+            color: white;
+            border: none;
+            padding: 12px 16px;
+            font-size: 15px;
+            font-weight: bold;
+            border-radius: 20px;
+            width: 100%;
+            margin-bottom: 12px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            box-shadow: 0 4px 12px rgba(238,82,83,0.3);
+        }
+
+        .story-track-container {
+            background: linear-gradient(to bottom, #a8ff78, #78ffd6);
+            border: 2px solid #2ed573;
+            border-radius: 18px;
+            padding: 10px 14px;
+            margin-bottom: 12px;
+            position: relative;
+            box-shadow: inset 0 2px 6px rgba(0,0,0,0.1);
+            overflow: hidden;
+        }
+
+        .track-labels {
+            display: flex;
+            justify-content: space-between;
+            font-size: 11px;
+            font-weight: bold;
+            color: #2ed573;
+            margin-bottom: 4px;
+        }
+
+        .track-path {
+            height: 48px;
+            background: #eccc68;
+            border-radius: 12px;
+            position: relative;
+            display: flex;
+            align-items: center;
+            border: 2px dashed #b2bec3;
+            padding: 0 5px;
+        }
+
+        .track-entity {
+            position: absolute;
+            font-size: 28px;
+            transition: left 0.8s cubic-bezier(0.25, 1, 0.5, 1), transform 0.3s;
+            top: 50%;
+            transform: translateY(-50%);
+        }
+
+        .entity-dog { left: 2%; z-index: 1; }
+        .entity-boy { left: 35%; z-index: 2; transform: translateY(-50%) scaleX(1); }
+        .entity-house { right: 2%; z-index: 1; font-size: 32px; }
+
+        .speech-bubble {
+            position: absolute;
+            background: #ffffff;
+            color: #2c3e50;
+            padding: 4px 8px;
+            border-radius: 10px;
+            font-size: 11px;
+            font-weight: bold;
+            border: 1px solid #70a1ff;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.15);
+            top: -24px;
+            left: -10px;
+            white-space: nowrap;
+            display: none;
+            animation: bounce 0.5s ease infinite alternate;
+        }
+
+        @keyframes bounce {
+            from { transform: translateY(0); }
+            to { transform: translateY(-4px); }
+        }
+
+        .stats-bar {
+            display: flex;
+            justify-content: space-between;
+            background: #f1f2f6;
+            padding: 10px 14px;
+            border-radius: 14px;
+            font-weight: bold;
+            font-size: 14px;
+            color: #2f3542;
+            margin-bottom: 10px;
+        }
+
+        .timer-container {
+            width: 100%;
+            background-color: #dfe4ea;
+            border-radius: 10px;
+            height: 10px;
+            margin-bottom: 12px;
+            overflow: hidden;
+        }
+
+        .timer-bar {
+            height: 100%;
+            background-color: #2ed573;
+            width: 100%;
+            transition: width 1s linear, background-color 0.3s;
+        }
+
+        .topic-badge {
+            display: inline-block;
+            background: #eccc68;
+            color: #2f3542;
+            padding: 5px 12px;
+            border-radius: 16px;
+            font-size: 13px;
+            font-weight: bold;
+        }
+
+        .question-box {
+            font-size: 21px;
+            color: #1e272e;
+            font-weight: 700;
+            min-height: 85px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 14px;
+            background: #ffffff;
+            padding: 16px;
+            border-radius: 18px;
+            border: 3px solid #70a1ff;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.06);
+            line-height: 1.4;
+            text-align: center;
+        }
+
+        .options-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+            margin-bottom: 12px;
+        }
+
+        .opt-btn {
+            background: #f1f2f6;
+            border: 2px solid #ced6e0;
+            padding: 16px 8px;
+            font-size: 19px;
+            font-weight: bold;
+            border-radius: 16px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            color: #2f3542;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+        }
+
+        .opt-btn.correct {
+            background: #2ed573 !important;
+            border-color: #2ed573 !important;
+            color: white !important;
+        }
+
+        .opt-btn.wrong {
+            background: #ff4757 !important;
+            border-color: #ff4757 !important;
+            color: white !important;
+        }
+
+        .message-box {
+            font-size: 16px;
+            font-weight: bold;
+            min-height: 28px;
+            margin-bottom: 10px;
+            text-align: center;
+        }
+
+        .rewards-section {
+            border-top: 2px dashed #ced6e0;
+            padding-top: 10px;
+            margin-top: 5px;
+        }
+
+        .rewards-title {
+            font-size: 13px;
+            font-weight: bold;
+            color: #57606f;
+            margin-bottom: 8px;
+            text-align: center;
+        }
+
+        .rewards-grid {
+            display: flex;
+            justify-content: space-around;
+            flex-wrap: wrap;
+            gap: 4px;
+        }
+
+        .reward-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            font-size: 10px;
+            opacity: 0.25;
+            filter: grayscale(100%);
+            transition: all 0.4s ease;
+            font-weight: bold;
+            color: #2f3542;
+        }
+
+        .reward-item.unlocked {
+            opacity: 1;
+            filter: grayscale(0%);
+            transform: scale(1.08);
+            color: #2ed573;
+        }
+
+        .reward-icon { font-size: 22px; margin-bottom: 2px; }
+
+        .profiles-list {
+            margin-top: 12px;
+            border-top: 1px solid #eee;
+            padding-top: 10px;
+        }
+
+        .profile-chip {
+            display: inline-block;
+            background: #eccc68;
+            padding: 6px 12px;
+            border-radius: 15px;
+            font-size: 13px;
+            font-weight: bold;
+            margin: 4px;
+            cursor: pointer;
+        }
+
+        .modal-overlay {
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0,0,0,0.6);
+            display: none;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+            padding: 20px;
+        }
+
+        .modal-card {
+            background: white;
+            padding: 20px;
+            border-radius: 20px;
+            max-width: 400px;
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <button id="pwa-install-btn" class="install-pwa-btn" onclick="triggerInstallPWA()">
+        📲 हे ॲप मोबाईलवर इन्स्टॉल करा
+    </button>
+
+    <div id="header-bar" class="header-bar" style="display:none;">
+        <div class="user-info">
+            <span>👦 <span id="display-user-name">विद्यार्थी</span></span>
+        </div>
+        <button class="btn-home" onclick="goToHome()">🏠 मुख्य पान</button>
+    </div>
+
+    <!-- SCREEN 1: LOGIN -->
+    <div id="screen-login" class="screen active">
+        <div>
+            <h1>🚀 यादव सरांचे गणित बूस्टर</h1>
+            <p style="text-align:center; color:#57606f; margin-bottom: 18px; font-size: 14px; font-weight: bold;">
+                इयत्ता १ ली ते ४ थी च्या विद्यार्थ्यांसाठी मनोरंजक गणित खेळ
+            </p>
+            
+            <div class="form-group">
+                <label for="student-name">विद्यार्थ्याचे नाव प्रविष्ट करा:</label>
+                <input type="text" id="student-name" placeholder="उदा. आरव पवार" autocomplete="off" maxlength="25">
+            </div>
+
+            <button type="button" class="btn-primary" id="login-btn-action">प्रवेश करा 🚀</button>
+
+            <div id="saved-profiles-div" class="profiles-list" style="display:none;">
+                <p style="font-size: 13px; font-weight:bold; color:#747d8c; margin-bottom:6px;">जतन केलेले विद्यार्थी (क्लिक करा):</p>
+                <div id="profiles-chips"></div>
+            </div>
+        </div>
+
+        <div style="text-align: center; margin-top: 15px; font-size: 12px; color: #747d8c; font-weight: bold;">
+            👨‍🏫 संकल्पना व निर्मिती: यादव सर
+        </div>
+    </div>
+
+    <!-- SCREEN 2: SETUP -->
+    <div id="screen-setup" class="screen">
+        <div>
+            <h1>📚 इयत्ता व घटक निवडा</h1>
+            
+            <div class="form-group">
+                <label for="grade-select">इयत्ता निवडा:</label>
+                <select id="grade-select">
+                    <option value="1">इयत्ता १ ली</option>
+                    <option value="2">इयत्ता २ री</option>
+                    <option value="3">इयत्ता ३ री</option>
+                    <option value="4">इयत्ता ४ थी</option>
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label for="topic-select">घटक (प्रकरण) निवडा:</label>
+                <select id="topic-select">
+                    <!-- Populated dynamically and safely -->
+                </select>
+            </div>
+
+            <div class="stats-bar" style="margin-top: 12px;">
+                <span>🏆 एकूण गुण: <span id="setup-total-score">०</span></span>
+                <span>⭐ पातळी: <span id="setup-level">१</span></span>
+            </div>
+        </div>
+
+        <button type="button" class="btn-primary" id="start-game-btn-action">🎮 खेळ सुरू करा</button>
+    </div>
+
+    <!-- SCREEN 3: GAMEPLAY -->
+    <div id="screen-play" class="screen">
+        <div>
+            <div class="story-track-container">
+                <div class="track-labels">
+                    <span>🐕 कुत्रा</span>
+                    <span>🏃‍♂️ घराकडे धावा!</span>
+                    <span>🏠 घर</span>
+                </div>
+                <div class="track-path">
+                    <div id="entity-dog" class="track-entity entity-dog">🐕</div>
+                    <div id="entity-boy" class="track-entity entity-boy">
+                        <span id="speech-bubble" class="speech-bubble">बाय बाय! 👋</span>
+                        <span id="boy-avatar">🏃‍♂️</span>
+                    </div>
+                    <div class="track-entity entity-house">🏠</div>
+                </div>
+            </div>
+
+            <div class="stats-bar">
+                <span>🏆 गुण: <span id="score">०</span></span>
+                <span>⏳ वेळ: <span id="timer-text">१५</span> से.</span>
+            </div>
+
+            <div class="timer-container">
+                <div id="timer-bar" class="timer-bar"></div>
+            </div>
+
+            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom: 8px;">
+                <div id="topic-badge" class="topic-badge">विषय</div>
+                <button class="btn-secondary" onclick="backToSetup()">⚙️ घटक बदला</button>
+            </div>
+
+            <div id="question" class="question-box">प्रश्न तयार होत आहे...</div>
+
+            <div class="options-grid">
+                <button class="opt-btn" onclick="checkAnswer(0)"></button>
+                <button class="opt-btn" onclick="checkAnswer(1)"></button>
+                <button class="opt-btn" onclick="checkAnswer(2)"></button>
+                <button class="opt-btn" onclick="checkAnswer(3)"></button>
+            </div>
+
+            <div id="message" class="message-box"></div>
+        </div>
+
+        <div class="rewards-section">
+            <div class="rewards-title">🎒 माझी शैक्षणिक बक्षीसे:</div>
+            <div class="rewards-grid">
+                <div class="reward-item" id="reward-pen"><span class="reward-icon">🖊️</span><span>पेन (२०)</span></div>
+                <div class="reward-item" id="reward-compass"><span class="reward-icon">📐</span><span>कंपास (६०)</span></div>
+                <div class="reward-item" id="reward-notebook"><span class="reward-icon">📓</span><span>वही (१००)</span></div>
+                <div class="reward-item" id="reward-bag"><span class="reward-icon">🎒</span><span>बॅग (१४०)</span></div>
+                <div class="reward-item" id="reward-trophy"><span class="reward-icon">🏆</span><span>ट्रॉफी (२००)</span></div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div id="pwa-modal" class="modal-overlay">
+    <div class="modal-card">
+        <h3>📲 ॲप इन्स्टॉल कसे करावे?</h3>
+        <p style="margin: 12px 0; font-size: 14px; color:#57606f; line-height: 1.5;">
+            गुगल क्रोमच्या उजव्या बाजूच्या तीन ठिपक्यांवर <b>(⋮ Menu)</b> क्लिक करा आणि <b>'Add to Home screen'</b> किंवा <b>'Install app'</b> वर क्लिक करा.
+        </p>
+        <button class="btn-primary" style="padding:10px;" onclick="document.getElementById('pwa-modal').style.display='none'">समजले 👍</button>
+    </div>
+</div>
+
+<script>
+    const topicsData = {
+        "1": [
+            { id: "std1_count", name: "१. संख्या मोजणी व ओळख (१-१००)" },
+            { id: "std1_compare", name: "२. लहान-मोठी संख्या व क्रम" },
+            { id: "std1_add", name: "३. सोपी बेरीज (१ ते २०)" },
+            { id: "std1_sub", name: "४. सोपी वजाबाकी (१ ते २०)" },
+            { id: "std1_coins", name: "५. नाणी व नोटांची ओळख" },
+            { id: "std1_shapes", name: "६. आकार (गोल, चौकोन, त्रिकोण)" },
+            { id: "std1_all", name: "🌟 इयत्ता १ ली: सर्व घटक" }
+        ],
+        "2": [
+            { id: "std2_placeval", name: "१. स्थानिक किंमत (२-अंकी)" },
+            { id: "std2_add", name: "२. हातची बेरीज (२-अंकी)" },
+            { id: "std2_sub", name: "३. हातची वजाबाकी (२-अंकी)" },
+            { id: "std2_table", name: "४. पाढे सराव (२ ते १०)" },
+            { id: "std2_word", name: "५. शाब्दिक उदाहरणे" },
+            { id: "std2_coins", name: "६. नाणी-नोटा व्यवहार" },
+            { id: "std2_time", name: "७. वार, महिने व घड्याळ" },
+            { id: "std2_all", name: "🌟 इयत्ता २ री: सर्व घटक" }
+        ],
+        "3": [
+            { id: "std3_num", name: "१. ३-अंकी संख्याज्ञान (१००-९९९)" },
+            { id: "std3_addsub", name: "२. ३-अंकी बेरीज व वजाबाकी" },
+            { id: "std3_mul", name: "३. गुणाकार (२ ते १५ पाढे)" },
+            { id: "std3_div", name: "४. भागाकार (समान वाटणी)" },
+            { id: "std3_frac", name: "५. अपूर्णांक (पाव, अर्धा, पाऊण)" },
+            { id: "std3_measure", name: "६. लांबी, वजन व धारकता मापे" },
+            { id: "std3_time", name: "७. घड्याळ व वाचन" },
+            { id: "std3_all", name: "🌟 इयत्ता ३ री: सर्व घटक" }
+        ],
+        "4": [
+            { id: "std4_num", name: "१. ४ व ५-अंकी संख्या ज्ञान" },
+            { id: "std4_addsub", name: "२. ४-अंकी बेरीज व वजाबाकी" },
+            { id: "std4_muldiv", name: "३. २-अंकी गुणाकार व भागाकार" },
+            { id: "std4_frac", name: "४. अपूर्णांक बेरीज व सममूल्य" },
+            { id: "std4_units", name: "५. मापे व परिमाणे रूपांतरण" },
+            { id: "std4_word", name: "६. नफा-तोटा व शाब्दिक व्यवहार" },
+            { id: "std4_geo", name: "७. परिमिती व क्षेत्रफळ" },
+            { id: "std4_picto", name: "८. चित्रालेख (Pictograph)" },
+            { id: "std4_all", name: "🌟 इयत्ता ४ थी: सर्व घटक" }
+        ]
+    };
+
+    let currentUser = "";
+    let userStats = { score: 0, level: 1 };
+    let currentGrade = "1";
+    let currentTopic = "std1_count";
+    let currentQuestionData = null;
+    let timerInterval = null;
+    let timeLeft = 15;
+    let isAnswered = false;
+
+    function randInt(min, max) {
+        return Math.floor(Math.random() * (max - min + 1)) + min;
+    }
+
+    function shuffle(array) {
+        return array.sort(() => Math.random() - 0.5);
+    }
+
+    function showScreen(screenId) {
+        document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+        let target = document.getElementById(screenId);
+        if (target) target.classList.add('active');
+        
+        let headerEl = document.getElementById('header-bar');
+        if (screenId !== 'screen-login') {
+            if (headerEl) headerEl.style.display = 'flex';
+        } else {
+            if (headerEl) headerEl.style.display = 'none';
+        }
+    }
+
+    function updateTopicOptions() {
+        let gradeSelect = document.getElementById('grade-select');
+        if (gradeSelect) {
+            currentGrade = gradeSelect.value.toString();
+        }
+        
+        let selectEl = document.getElementById('topic-select');
+        if (!selectEl) return;
+        selectEl.innerHTML = '';
+
+        let list = topicsData[currentGrade] || topicsData["1"];
+
+        list.forEach(t => {
+            let opt = document.createElement('option');
+            opt.value = t.id;
+            opt.innerText = t.name;
+            selectEl.appendChild(opt);
+        });
+
+        if (list.length > 0) {
+            selectEl.value = list[0].id;
+            currentTopic = list[0].id;
+        }
+    }
+
+    function loginUser() {
+        let inputEl = document.getElementById('student-name');
+        let nameInput = inputEl ? inputEl.value.trim() : "";
+        if (!nameInput) {
+            nameInput = "विद्यार्थी";
+        }
+        currentUser = nameInput;
+        let displayEl = document.getElementById('display-user-name');
+        if (displayEl) displayEl.innerText = currentUser;
+
+        try {
+            let savedData = localStorage.getItem('math_user_' + currentUser);
+            if (savedData) {
+                let parsed = JSON.parse(savedData);
+                if (parsed && typeof parsed.score === 'number') {
+                    userStats = parsed;
+                } else {
+                    userStats = { score: 0, level: 1 };
+                }
+            } else {
+                userStats = { score: 0, level: 1 };
+            }
+        } catch(e) {
+            userStats = { score: 0, level: 1 };
+        }
+
+        document.getElementById('setup-total-score').innerText = userStats.score;
+        document.getElementById('setup-level').innerText = Math.floor(userStats.score / 100) + 1;
+        updateTopicOptions();
+        showScreen('screen-setup');
+    }
+
+    function startGame() {
+        let topicSelect = document.getElementById('topic-select');
+        if (topicSelect && topicSelect.value) {
+            currentTopic = topicSelect.value;
+        } else {
+            let list = topicsData[currentGrade] || topicsData["1"];
+            currentTopic = list[0].id;
+        }
+        
+        showScreen('screen-play');
+        document.getElementById('score').innerText = userStats.score;
+        checkRewards();
+        generateNewQuestion();
+    }
+
+    function backToSetup() {
+        if (timerInterval) clearInterval(timerInterval);
+        document.getElementById('setup-total-score').innerText = userStats.score;
+        document.getElementById('setup-level').innerText = Math.floor(userStats.score / 100) + 1;
+        updateTopicOptions();
+        showScreen('screen-setup');
+    }
+
+    function goToHome() {
+        backToSetup();
+    }
+
+    function generateNewQuestion() {
+        let boyEl = document.getElementById('entity-boy');
+        let dogEl = document.getElementById('entity-dog');
+        let speechEl = document.getElementById('speech-bubble');
+        let avatarEl = document.getElementById('boy-avatar');
+
+        if (boyEl) boyEl.style.left = '35%';
+        if (dogEl) dogEl.style.left = '2%';
+        if (speechEl) speechEl.style.display = 'none';
+        if (avatarEl) avatarEl.innerText = '🏃‍♂️';
+
+        let topic = currentTopic;
+        let grade = currentGrade;
+
+        if (topic.endsWith('_all')) {
+            let list = topicsData[grade].filter(t => !t.id.endsWith('_all'));
+            topic = list[randInt(0, list.length - 1)].id;
+        }
+
+        let qData = { question: "", options: [], correct: 0, topicName: "" };
+
+        function makeOptions(correctAns) {
+            let opts = new Set();
+            opts.add(correctAns.toString());
+            while (opts.size < 4) {
+                let offset = randInt(-5, 5);
+                if (offset === 0) offset = 1;
+                let val = correctAns + offset;
+                if (val >= 0) opts.add(val.toString());
+            }
+            let arr = Array.from(opts);
+            arr = shuffle(arr);
+            return {
+                options: arr,
+                correct: arr.indexOf(correctAns.toString())
+            };
+        }
+
+        const names = ["रिया", "आरव", "यश", "अनन्या", "रोहन", "काव्या", "कबीर", "सायली"];
+        const items = ["आंबे", "चेंडू", "फुगे", "वह्या", "पेन्सिल", "सफरचंद", "चॉकलेट"];
+
+        if (topic === "std1_count" || topic === "count") {
+            qData.topicName = "इयत्ता १ ली - संख्या ओळख";
+            let type = randInt(1, 3);
+            if (type === 1) {
+                let num = randInt(1, 80);
+                qData.question = `${num} च्या नंतर कोणती संख्या येते?`;
+                let res = makeOptions(num + 1);
+                qData.options = res.options; qData.correct = res.correct;
+            } else if (type === 2) {
+                let num = randInt(5, 90);
+                qData.question = `${num} च्या आधी कोणती संख्या येते?`;
+                let res = makeOptions(num - 1);
+                qData.options = res.options; qData.correct = res.correct;
+            } else {
+                let d = randInt(1, 9);
+                let e = randInt(1, 9);
+                qData.question = `दशक ${d} आणि एकक ${e} मिळून कोणती संख्या बनते?`;
+                let res = makeOptions(d * 10 + e);
+                qData.options = res.options; qData.correct = res.correct;
+            }
+        } else if (topic === "std1_compare" || topic === "compare") {
+            qData.topicName = "इयत्ता १ ली - लहान-मोठी संख्या";
+            let n1 = randInt(10, 90);
+            let n2 = randInt(10, 90);
+            while (n1 === n2) n2 = randInt(10, 90);
+            let askBig = randInt(0, 1) === 1;
+            if (askBig) {
+                qData.question = `${n1} आणि ${n2} पैकी मोठी संख्या कोणती?`;
+                let res = makeOptions(Math.max(n1, n2));
+                qData.options = res.options; qData.correct = res.correct;
+            } else {
+                qData.question = `${n1} आणि ${n2} पैकी लहान संख्या कोणती?`;
+                let res = makeOptions(Math.min(n1, n2));
+                qData.options = res.options; qData.correct = res.correct;
+            }
+        } else if (topic === "std1_add" || topic === "add1") {
+            qData.topicName = "इयत्ता १ ली - सोपी बेरीज";
+            let a = randInt(1, 10);
+            let b = randInt(1, 10);
+            qData.question = `${a} + ${b} = किती?`;
+            let res = makeOptions(a + b);
+            qData.options = res.options; qData.correct = res.correct;
+        } else if (topic === "std1_sub" || topic === "sub1") {
+            qData.topicName = "इयत्ता १ ली - सोपी वजाबाकी";
+            let a = randInt(5, 15);
+            let b = randInt(1, a);
+            qData.question = `${a} - ${b} = किती?`;
+            let res = makeOptions(a - b);
+            qData.options = res.options; qData.correct = res.correct;
+        } else if (topic === "std1_coins" || topic === "coins1") {
+            qData.topicName = "इयत्ता १ ली - नाणी व नोटा";
+            let coins = randInt(2, 5);
+            qData.question = `५ रुपयांची ${coins} नाणी म्हणजे एकूण किती रुपये?`;
+            let res = makeOptions(coins * 5);
+            qData.options = res.options; qData.correct = res.correct;
+        } else if (topic === "std1_shapes" || topic === "shapes1") {
+            qData.topicName = "इयत्ता १ ली - आकार ओळख";
+            let shapesArr = [
+                { q: "चेंडूचा आकार कोणता असतो?", a: "गोल", opts: ["गोल", "चौकोन", "त्रिकोण", "आयताकार"] },
+                { q: "रुपयाच्या नाण्याचा आकार कोणता?", a: "गोल", opts: ["गोल", "चौकोन", "त्रिकोण", "शंकू"] },
+                { q: "३ कोपरे असणारा आकार कोणता?", a: "त्रिकोण", opts: ["त्रिकोण", "चौकोन", "गोल", "आयताकार"] }
+            ];
+            let picked = shapesArr[randInt(0, shapesArr.length - 1)];
+            qData.question = picked.q;
+            let opts = shuffle(picked.opts);
+            qData.options = opts;
+            qData.correct = opts.indexOf(picked.a);
+        } else if (topic === "std2_placeval") {
+            qData.topicName = "इयत्ता २ री - स्थानिक किंमत";
+            let d = randInt(2, 9);
+            let e = randInt(1, 9);
+            let num = d * 10 + e;
+            qData.question = `${num} या संख्येत ${d} ची स्थानिक किंमत किती?`;
+            let res = makeOptions(d * 10);
+            qData.options = res.options; qData.correct = res.correct;
+        } else if (topic === "std2_add" || topic === "add2") {
+            qData.topicName = "इयत्ता २ री - हातची बेरीज";
+            let a = randInt(18, 49);
+            let b = randInt(15, 48);
+            qData.question = `${a} + ${b} = किती?`;
+            let res = makeOptions(a + b);
+            qData.options = res.options; qData.correct = res.correct;
+        } else if (topic === "std2_sub" || topic === "sub2") {
+            qData.topicName = "इयत्ता २ री - हातची वजाबाकी";
+            let a = randInt(42, 95);
+            let b = randInt(15, a - 10);
+            qData.question = `${a} - ${b} = किती?`;
+            let res = makeOptions(a - b);
+            qData.options = res.options; qData.correct = res.correct;
+        } else if (topic === "std2_table" || topic === "table2") {
+            qData.topicName = "इयत्ता २ री - पाढे सराव (२ ते १०)";
+            let tableNum = randInt(2, 10);
+            let multiplier = randInt(2, 10);
+            qData.question = `${tableNum} × ${multiplier} = किती?`;
+            let res = makeOptions(tableNum * multiplier);
+            qData.options = res.options; qData.correct = res.correct;
+        } else if (topic === "std2_word" || topic === "word2") {
+            qData.topicName = "इयत्ता २ री - शाब्दिक उदाहरणे";
+            let name = names[randInt(0, names.length - 1)];
+            let item = items[randInt(0, items.length - 1)];
+            let a = randInt(12, 28);
+            let b = randInt(8, 22);
+            let isAdd = randInt(0, 1) === 1;
+            if (isAdd) {
+                qData.question = `${name}कडे ${a} ${item} होते. मित्राने ${b} ${item} दिले. एकूण किती?`;
+                let res = makeOptions(a + b);
+                qData.options = res.options; qData.correct = res.correct;
+            } else {
+                qData.question = `${name}कडे ${a} ${item} होते. त्यातील ${b} ${item} वापरले. उरले किती?`;
+                let res = makeOptions(a - b);
+                qData.options = res.options; qData.correct = res.correct;
+            }
+        } else if (topic === "std2_coins" || topic === "coins2") {
+            qData.topicName = "इयत्ता २ री - नाणी-नोटा व्यवहार";
+            let note20 = randInt(1, 2);
+            let note10 = randInt(1, 3);
+            let total = note20 * 20 + note10 * 10;
+            qData.question = `२० रु. च्या ${note20} नोटा आणि १० रु. च्या ${note10} नोटा = एकूण किती?`;
+            let res = makeOptions(total);
+            qData.options = res.options; qData.correct = res.correct;
+        } else if (topic === "std2_time" || topic === "time2") {
+            qData.topicName = "इयत्ता २ री - वार व कालमापन";
+            let timeArr = [
+                { q: "एका आठवड्यात किती वार असतात?", a: "७", opts: ["७", "५", "६", "८"] },
+                { q: "रविवारच्या नंतर कोणता वार येतो?", a: "सोमवार", opts: ["सोमवार", "शनिवार", "मंगळवार", "बुधवार"] },
+                { q: "एका वर्षात किती महिने असतात?", a: "१२", opts: ["१२", "१०", "१५", "३०"] }
+            ];
+            let picked = timeArr[randInt(0, timeArr.length - 1)];
+            qData.question = picked.q;
+            let opts = shuffle(picked.opts);
+            qData.options = opts;
+            qData.correct = opts.indexOf(picked.a);
+        } else if (topic === "std3_num") {
+            qData.topicName = "इयत्ता ३ री - ३-अंकी संख्याज्ञान";
+            let h = randInt(1, 9);
+            let d = randInt(0, 9);
+            let e = randInt(1, 9);
+            let num = h * 100 + d * 10 + e;
+            qData.question = `${num} या संख्येत शतकाचा अंक कोणता?`;
+            let res = makeOptions(h);
+            qData.options = res.options; qData.correct = res.correct;
+        } else if (topic === "std3_addsub" || topic === "addsub3") {
+            qData.topicName = "इयत्ता ३ री - ३-अंकी बेरीज/वजाबाकी";
+            let isAdd = randInt(0, 1) === 1;
+            if (isAdd) {
+                let a = randInt(120, 450);
+                let b = randInt(110, 350);
+                qData.question = `${a} + ${b} = किती?`;
+                let res = makeOptions(a + b);
+                qData.options = res.options; qData.correct = res.correct;
+            } else {
+                let a = randInt(500, 890);
+                let b = randInt(120, a - 50);
+                qData.question = `${a} - ${b} = किती?`;
+                let res = makeOptions(a - b);
+                qData.options = res.options; qData.correct = res.correct;
+            }
+        } else if (topic === "std3_mul" || topic === "mul3") {
+            qData.topicName = "इयत्ता ३ री - गुणाकार (पाढे २ ते १५)";
+            let a = randInt(3, 14);
+            let b = randInt(3, 9);
+            qData.question = `${a} × ${b} = किती?`;
+            let res = makeOptions(a * b);
+            qData.options = res.options; qData.correct = res.correct;
+        } else if (topic === "std3_div" || topic === "div3") {
+            qData.topicName = "इयत्ता ३ री - भागाकार (समान वाटणी)";
+            let b = randInt(2, 8);
+            let ans = randInt(3, 9);
+            let a = b * ans;
+            qData.question = `${a} ÷ ${b} = किती?`;
+            let res = makeOptions(ans);
+            qData.options = res.options; qData.correct = res.correct;
+        } else if (topic === "std3_frac" || topic === "frac3") {
+            qData.topicName = "इयत्ता ३ री - अपूर्णांक";
+            let itemsArr = [
+                { q: "अर्धा भाग दर्शवणारा अपूर्णांक कोणता?", a: "१/२", opts: ["१/२", "१/४", "३/४", "१/३"] },
+                { q: "पाव भाग दर्शवणारा अपूर्णांक कोणता?", a: "१/४", opts: ["१/४", "१/२", "३/४", "२/३"] },
+                { q: "पाऊण भाग दर्शवणारा अपूर्णांक कोणता?", a: "३/४", opts: ["३/४", "१/२", "१/४", "४/४"] }
+            ];
+            let picked = itemsArr[randInt(0, itemsArr.length - 1)];
+            qData.question = picked.q;
+            let opts = shuffle(picked.opts);
+            qData.options = opts;
+            qData.correct = opts.indexOf(picked.a);
+        } else if (topic === "std3_measure" || topic === "measure3") {
+            qData.topicName = "इयत्ता ३ री - लांबी व वजन मापे";
+            let type = randInt(1, 2);
+            if (type === 1) {
+                let m = randInt(1, 8);
+                qData.question = `${m} मीटर म्हणजे किती सेंटीमीटर?`;
+                let res = makeOptions(m * 100);
+                qData.options = res.options; qData.correct = res.correct;
+            } else {
+                let kg = randInt(1, 6);
+                qData.question = `${kg} किलोग्राम म्हणजे किती ग्राम?`;
+                let res = makeOptions(kg * 1000);
+                qData.options = res.options; qData.correct = res.correct;
+            }
+        } else if (topic === "std3_time" || topic === "time3") {
+            qData.topicName = "इयत्ता ३ री - घड्याळ व वेळ";
+            let timeArr = [
+                { q: "घड्याळात मोठा काटा १२ वर आणि लहान काटा ७ वर असल्यास किती वाजले?", a: "७", opts: ["७", "१२", "६", "५"] },
+                { q: "१ तासात किती मिनिटे असतात?", a: "६०", opts: ["६०", "३०", "४५", "१००"] }
+            ];
+            let picked = timeArr[randInt(0, timeArr.length - 1)];
+            qData.question = picked.q;
+            let opts = shuffle(picked.opts);
+            qData.options = opts;
+            qData.correct = opts.indexOf(picked.a);
+        } else if (topic === "std4_num" || topic === "num4") {
+            qData.topicName = "इयत्ता ४ थी - ४-५ अंकी संख्याज्ञान";
+            let num = randInt(1000, 9999);
+            qData.question = `${num} या संख्येत हजार स्थानचा अंक कोणता?`;
+            let thousandDigit = Math.floor(num / 1000);
+            let res = makeOptions(thousandDigit);
+            qData.options = res.options; qData.correct = res.correct;
+        } else if (topic === "std4_addsub") {
+            qData.topicName = "इयत्ता ४ थी - ४-अंकी बेरीज/वजाबाकी";
+            let isAdd = randInt(0, 1) === 1;
+            if (isAdd) {
+                let a = randInt(1200, 4800);
+                let b = randInt(1100, 3500);
+                qData.question = `${a} + ${b} = किती?`;
+                let res = makeOptions(a + b);
+                qData.options = res.options; qData.correct = res.correct;
+            } else {
+                let a = randInt(5500, 9800);
+                let b = randInt(1200, a - 500);
+                qData.question = `${a} - ${b} = किती?`;
+                let res = makeOptions(a - b);
+                qData.options = res.options; qData.correct = res.correct;
+            }
+        } else if (topic === "std4_muldiv" || topic === "muldiv4") {
+            qData.topicName = "इयत्ता ४ थी - २-अंकी गुणाकार/भागाकार";
+            let isMul = randInt(0, 1) === 1;
+            if (isMul) {
+                let a = randInt(12, 35);
+                let b = randInt(5, 12);
+                qData.question = `${a} × ${b} = किती?`;
+                let res = makeOptions(a * b);
+                qData.options = res.options; qData.correct = res.correct;
+            } else {
+                let b = randInt(6, 12);
+                let ans = randInt(11, 25);
+                let a = b * ans;
+                qData.question = `${a} ÷ ${b} = किती?`;
+                let res = makeOptions(ans);
+                qData.options = res.options; qData.correct = res.correct;
+            }
+        } else if (topic === "std4_frac" || topic === "frac4") {
+            qData.topicName = "इयत्ता ४ थी - अपूर्णांक व सममूल्य";
+            let itemsArr = [
+                { q: "१/२ चा सममूल्य अपूर्णांक कोणता?", a: "२/४", opts: ["२/४", "१/३", "३/५", "२/३"] },
+                { q: "१/४ + २/४ = किती?", a: "३/४", opts: ["३/४", "२/४", "१/४", "४/४"] },
+                { q: "३/४ म्हणजे कोणता भाग?", a: "पाऊण", opts: ["पाऊण", "पाव", "अर्धा", "एक"] }
+            ];
+            let picked = itemsArr[randInt(0, itemsArr.length - 1)];
+            qData.question = picked.q;
+            let opts = shuffle(picked.opts);
+            qData.options = opts;
+            qData.correct = opts.indexOf(picked.a);
+        } else if (topic === "std4_units" || topic === "units4") {
+            qData.topicName = "इयत्ता ४ थी - परिमाणे रूपांतरण";
+            let type = randInt(1, 2);
+            if (type === 1) {
+                let kg = randInt(1, 5);
+                let g = randInt(1, 9) * 100;
+                qData.question = `${kg} किग्रा ${g} ग्राम = एकूण किती ग्राम?`;
+                let res = makeOptions(kg * 1000 + g);
+                qData.options = res.options; qData.correct = res.correct;
+            } else {
+                let l = randInt(1, 5);
+                let ml = randInt(1, 9) * 100;
+                qData.question = `${l} लिटर ${ml} मिली = एकूण किती मिलीलिटर?`;
+                let res = makeOptions(l * 1000 + ml);
+                qData.options = res.options; qData.correct = res.correct;
+            }
+        } else if (topic === "std4_word" || topic === "word4") {
+            qData.topicName = "इयत्ता ४ थी - नफा-तोटा व शाब्दिक व्यवहार";
+            let buy = randInt(50, 150);
+            let profit = randInt(20, 60);
+            let sell = buy + profit;
+            qData.question = `एक वस्तू ${buy} रु. खरेदी करून ${sell} रु. ला विकली, तर नफा किती झाला?`;
+            let res = makeOptions(profit);
+            qData.options = res.options; qData.correct = res.correct;
+        } else if (topic === "std4_geo" || topic === "geo4") {
+            qData.topicName = "इयत्ता ४ थी - परिमिती व क्षेत्रफळ";
+            let side = randInt(4, 12);
+            qData.question = `बाजू ${side} सेंमी असणाऱ्या चौरसाची परिमिती किती?`;
+            let res = makeOptions(side * 4);
+            qData.options = res.options; qData.correct = res.correct;
+        } else if (topic === "std4_picto" || topic === "picto4") {
+            qData.topicName = "इयत्ता ४ थी - चित्रालेख";
+            let scale = 10;
+            let count = randInt(3, 8);
+            qData.question = `चित्रालेखात १ चित्र = ${scale} झाडे. एकूण ${count} चित्रे म्हणजे किती झाडे?`;
+            let res = makeOptions(scale * count);
+            qData.options = res.options; qData.correct = res.correct;
+        } else {
+            // Absolute fallback default question
+            let a = randInt(5, 15);
+            let b = randInt(2, 10);
+            qData.topicName = "गणित सराव";
+            qData.question = `${a} + ${b} = किती?`;
+            let res = makeOptions(a + b);
+            qData.options = res.options; qData.correct = res.correct;
+        }
+
+        currentQuestionData = qData;
+        displayQuestion();
+    }
+
+    function displayQuestion() {
+        isAnswered = false;
+        document.getElementById('message').innerText = '';
+        document.getElementById('topic-badge').innerText = currentQuestionData.topicName;
+        document.getElementById('question').innerText = currentQuestionData.question;
+
+        let btns = document.querySelectorAll('#screen-play .opt-btn');
+        btns.forEach((btn, index) => {
+            if (currentQuestionData.options[index] !== undefined) {
+                btn.innerText = currentQuestionData.options[index];
+            } else {
+                btn.innerText = "-";
+            }
+            btn.className = 'opt-btn';
+            btn.disabled = false;
+        });
+
+        startTimer();
+    }
+
+    function startTimer() {
+        timeLeft = 15;
+        document.getElementById('timer-text').innerText = timeLeft;
+        document.getElementById('timer-bar').style.width = '100%';
+        document.getElementById('timer-bar').style.backgroundColor = '#2ed573';
+
+        if (timerInterval) clearInterval(timerInterval);
+        timerInterval = setInterval(() => {
+            timeLeft--;
+            document.getElementById('timer-text').innerText = timeLeft;
+            let percent = (timeLeft / 15) * 100;
+            document.getElementById('timer-bar').style.width = percent + '%';
+
+            if (timeLeft <= 5) {
+                document.getElementById('timer-bar').style.backgroundColor = '#ff4757';
+            }
+
+            if (timeLeft <= 0) {
+                clearInterval(timerInterval);
+                timeOut();
+            }
+        }, 1000);
+    }
+
+    function checkAnswer(selectedIndex) {
+        if (isAnswered) return;
+        isAnswered = true;
+        clearInterval(timerInterval);
+
+        let btns = document.querySelectorAll('#screen-play .opt-btn');
+        let boyEl = document.getElementById('entity-boy');
+        let dogEl = document.getElementById('entity-dog');
+        let speechEl = document.getElementById('speech-bubble');
+        let avatarEl = document.getElementById('boy-avatar');
+
+        if (selectedIndex === currentQuestionData.correct) {
+            btns[selectedIndex].classList.add('correct');
+            userStats.score += 20;
+            document.getElementById('score').innerText = userStats.score;
+            document.getElementById('message').innerText = "🎉 हुर्रे! अरे वा! अगदी बरोबर उत्तर!";
+            document.getElementById('message').style.color = "#2ed573";
+            
+            if (boyEl) boyEl.style.left = '80%';
+            if (dogEl) dogEl.style.left = '2%';
+            
+            setTimeout(() => {
+                if (avatarEl) avatarEl.innerText = '🙋‍♂️';
+                if (speechEl) {
+                    speechEl.innerText = "बाय बाय! 👋🐕";
+                    speechEl.style.display = 'block';
+                }
+            }, 600);
+
+            playSound('correct');
+            speakChildVoice("हुर्रे! अगदी बरोबर उत्तर! बाय बाय!");
+            checkRewards();
+        } else {
+            btns[selectedIndex].classList.add('wrong');
+            if (btns[currentQuestionData.correct]) {
+                btns[currentQuestionData.correct].classList.add('correct');
+            }
+            document.getElementById('message').innerText = "❌ अरेरे! पुन्हा प्रयत्न करूया.";
+            document.getElementById('message').style.color = "#ff4757";
+
+            if (dogEl) dogEl.style.left = '25%';
+            if (avatarEl) avatarEl.innerText = '😱';
+            playSound('wrong');
+            speakChildVoice("अरेरे! पुन्हा प्रयत्न करूया.");
+        }
+
+        setTimeout(() => {
+            generateNewQuestion();
+        }, 3500);
+    }
+
+    function timeOut() {
+        if (isAnswered) return;
+        isAnswered = true;
+        let btns = document.querySelectorAll('#screen-play .opt-btn');
+        let dogEl = document.getElementById('entity-dog');
+        let avatarEl = document.getElementById('boy-avatar');
+
+        if (btns[currentQuestionData.correct]) {
+            btns[currentQuestionData.correct].classList.add('correct');
+        }
+        document.getElementById('message').innerText = "⏰ वेळ संपली! अरेरे! पुन्हा प्रयत्न करूया.";
+        document.getElementById('message').style.color = "#ffa502";
+
+        if (dogEl) dogEl.style.left = '25%';
+        if (avatarEl) avatarEl.innerText = '😱';
+        playSound('wrong');
+        speakChildVoice("वेळ संपली! अरेरे! पुन्हा प्रयत्न करूया.");
+
+        setTimeout(() => {
+            generateNewQuestion();
+        }, 3500);
+    }
+
+    function checkRewards() {
+        let sc = userStats.score;
+        if (sc >= 20) document.getElementById('reward-pen').classList.add('unlocked');
+        if (sc >= 60) document.getElementById('reward-compass').classList.add('unlocked');
+        if (sc >= 100) document.getElementById('reward-notebook').classList.add('unlocked');
+        if (sc >= 140) document.getElementById('reward-bag').classList.add('unlocked');
+        if (sc >= 200) document.getElementById('reward-trophy').classList.add('unlocked');
+    }
+
+    window.addEventListener('DOMContentLoaded', () => {
+        let loginBtn = document.getElementById('login-btn-action');
+        if (loginBtn) {
+            loginBtn.addEventListener('click', loginUser);
+        }
+
+        let startBtn = document.getElementById('start-game-btn-action');
+        if (startBtn) {
+            startBtn.addEventListener('click', startGame);
+        }
+
+        let gradeSelect = document.getElementById('grade-select');
+        if (gradeSelect) {
+            gradeSelect.addEventListener('change', updateTopicOptions);
+        }
+
+        let nameInput = document.getElementById('student-name');
+        if (nameInput) {
+            nameInput.addEventListener('keyup', (e) => {
+                if (e.key === 'Enter') loginUser();
+            });
+        }
+
+        updateTopicOptions();
+    });
+</script>
+
+</body>
+</html>
